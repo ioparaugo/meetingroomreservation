@@ -1,0 +1,177 @@
+﻿
+@{
+    ViewBag.Title = "Register";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/UserRegistration.js"></script>
+<!-- HEADING BREADCRUMB-->
+<section class="bg-pentagon py-4">
+    <div class="container py-3">
+        <div class="row d-flex align-items-center gy-4">
+            <div class="col-md-7">
+                <h1 class="h2 mb-0 text-uppercase">New account / sign in</h1>
+            </div>
+            <div class="col-md-5">
+                <!-- Breadcrumb-->
+                <ol class="text-sm justify-content-start justify-content-lg-end mb-0 breadcrumb undefined">
+                    <li class="breadcrumb-item"><a class="text-uppercase" href="/Home">Home</a></li>
+                    <li class="breadcrumb-item text-uppercase active">New account / sign in      </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- CREDENTIALS SECTION-->
+<section class="py-5">
+    <div class="container py-4">
+        <div class="row g-5">
+            <!-- REGISTER BLOCK-->
+            <div class="col-lg-7">
+                <header class="mb-5">
+                    <h2 class="text-uppercase mb-4">New account</h2>
+
+                </header>
+                <div class="col-lg-9">
+                    <div>
+                        <div class="alert mb-3 alert-danger" role="alert" id="alert-msg" style="display:none"> <strong>Error! </strong></div>
+                    </div>
+
+                </div>
+
+                <div class="col-lg-9">
+                    <div class="pb-4">
+                        <div class="alert mb-3 alert-primary" role="alert" style="display:none" id="alertsuccess"> <strong>Congratulations! </strong>You have been successfully registered on the portal.</div>
+                    </div>
+
+                </div>
+                <hr class="border-gray-200">
+                <!-- REGISTER FORM-->
+                @{
+                    if (ViewBag.FirstName == null)
+                    {
+                        <form id="register">
+
+                            <section id="general">
+                                <div class="row">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label" for="signupas">Sign up as &nbsp;<span style="color:red">*</span></label>
+                                        <select class="form-select js-states" id="usertype" name="signupas" data-customclass="form-control py-1" required="required">
+                                            <option value="0"></option>
+                                            <option value="1">Administrator</option>
+                                            <option value="2">Staff</option>
+                                            <option value="3">Service Staff</option>
+                                        </select>
+
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group mb-3 col-md-6">
+                                        <label class="form-label" for="firstname">First Name&nbsp;<span style="color:red">*</span></label>
+                                        <input class="form-control" id="fname" type="text" name="firstname" placeholder="Enter your first name" required="required">
+                                    </div>
+
+                                    <div class="form-group mb-3 col-md-6">
+                                        <label class="form-label" for="lastname">Last Name&nbsp;<span style="color:red">*</span></label>
+                                        <input class="form-control" id="lname" type="text" name="lastname" placeholder="Enter your last name" required="required">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group mb-3 col-md-6">
+                                        <label class="form-label" for="useremail">Email Address&nbsp;<span style="color:red">*</span></label>
+                                        <input class="form-control" id="useremail" type="email" name="useremail" placeholder="Enter your email address" required="required">
+                                    </div>
+                                    <div class="form-group mb-3 col-md-6">
+                                        <label class="form-label" for="mobile">Mobile Phone</label>
+                                        <input class="form-control" id="mobile" type="text" name="mobile" placeholder="Enter your Mobile Number">
+                                    </div>
+                                </div>
+
+                            </section>
+
+
+                            <section id="admin">
+                                <div class="row">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label" for="department">Department</label>
+                                        <input class="form-control" id="department" type="text" name="department" placeholder="Enter your Department">
+                                    </div>
+                                </div>
+
+                            </section>
+
+                            <section id="employee">
+                                <div class="row">
+                                    <div class="form-group mb-3 col-md-6">
+                                        <label class="form-label" for="manager">Manager</label>
+                                        <input class="form-control" id="manager" type="text" name="manager" placeholder="Managers Name">
+                                    </div>
+
+                                    <div class="form-group mb-3 col-md-6">
+                                        <label class="form-label" for="Jobtitle">Job Title</label>
+                                        <input class="form-control" id="jobtitle" type="text" name="jobtitle" placeholder="Job Title">
+                                    </div>
+                                </div>
+                            </section>
+                            <div class="row">
+
+                                <div class="form-group mb-3 col-md-6">
+                                    <label class="form-label" for="userpassword">Password&nbsp;<span style="color:red">*</span></label>
+                                    <input class="form-control" id="userpassword" type="password" name="userpassword" placeholder="Enter your password" required="required">
+                                </div>
+                                <div class="form-group mb-3 col-md-6">
+                                    <label class="form-label" for="confirmpassword">Confirm Password&nbsp;<span style="color:red">*</span></label>
+                                    <input class="form-control" id="confirmpassword" type="password" name="confirmpassword" placeholder="Confirm your password" required="required">
+                                </div>
+
+
+                            </div>
+
+                            <div class="form-group mb-3 text-center">
+                                <button class="btn btn-outline-primary" id="submit"><i class="fas fa-user me-2"></i>Register</button>
+                            </div>
+
+
+                        </form>
+                    }
+                    else
+                    {
+                        <div class="col-lg-9">
+                            <div class="pb-4">
+                                <div class="alert mb-3 alert-primary" role="alert"> <strong>Congratulations! </strong>You have been successfully registered on the portal.</div>
+                            </div>
+
+                        </div>
+                    }
+                }
+
+
+            </div>
+            <!-- LOGIN BLOCK-->
+            <div class="col-lg-5">
+                <header class="mb-5">
+                    <h2 class="text-uppercase mb-4">Login</h2>
+                    <p class="lead">Already Registered?</p>
+                </header>
+
+                <hr class="border-gray-200">
+                <!-- LOGIN FORM-->
+                <form action="/Home/Employee" method="post">
+                    <div class="form-group mb-3">
+                        <label class="form-label" for="loginemail"></label>
+                        <input class="form-control" id="loginemail" type="email" name="email" placeholder="Enter your email address">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label" for="loginpassword"></label>
+                        <input class="form-control" id="loginpassword" type="password" name="passwrd" placeholder="Enter your password">
+                    </div>
+                    <div class="form-group mb-3 text-center">
+                        <button class="btn btn-outline-primary" type="submit"><i class="fas fa-door-open me-2"></i>Log in</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+

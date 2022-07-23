@@ -1,0 +1,309 @@
+﻿@model MeetingRoomReservation.Service.CRMEntityModel.Rooms
+@{
+    ViewBag.Title = "Employee";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script src="~/Scripts/moment.min.js"></script>
+<script src="~/Scripts/bookingFunctions.js"></script>
+<!-- HEADING BREADCRUMB-->
+<section class="bg-pentagon py-4">
+    <div class="container py-3">
+        <div class="row d-flex align-items-center gy-4">
+            <div class="col-md-7">
+                <h1 class="h2 mb-0 text-uppercase">Welcome @ViewBag.FirstName @ViewBag.LastName </h1>
+                <input id="loggedinuser" type="text" value="@ViewBag.User.ContactId" hidden />
+                <input id="logginuserrole" type="text" value="@ViewBag.User.PortalRole.RoleName" hidden />
+            </div>
+            <div class="col-md-5">
+                <!-- Breadcrumb-->
+                <ol class="text-sm justify-content-start justify-content-lg-end mb-0 breadcrumb undefined">
+                    <li class="breadcrumb-item"><a class="text-uppercase" href="/Home">Home</a></li>
+                    <li class="breadcrumb-item text-uppercase active">Employee      </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="col-lg-9" style="display:none" id="message-notification">
+    <div class="pb-4">
+        <div class="alert alert-dismissible fade show alert-warning" role="alert"></div>
+    </div>
+
+</div>
+<!-- CUSTOMERS ORDERS SECTION-->
+<section class="py-5">
+    <div class="container py-4">
+        <div class="row gy-5">
+            <div class="col-lg-9">
+                @*<p class="text-muted lead mb-5">If you have any questions, please feel free to <a href="contact.html">contact us</a>, our customer service center is working for you 24/7.</p>*@
+                <!-- Availabele Meeting Rooms TABLE-->
+                <ul class="nav nav-pills flex-column flex-sm-row border-bottom-0" id="tab3" role="tablist">
+
+
+                    <li class="nav-item flex-sm-fill" role="presentation" style="display:none" id="list1">
+                        <button class="border-bottom-0 w-100 nav-link" id="avlbuildings-tab" data-bs-toggle="tab" data-bs-target="#avlbuildings" type="button" role="tab" aria-controls="avlbuildings" aria-selected="false">All Buildings</button>
+                    </li>
+
+                    <li class="nav-item flex-sm-fill" role="presentation" id="list2">
+                        <button class="border-bottom-0 w-100 nav-link " id="avlmeetingrooms-tab" data-bs-toggle="tab" data-bs-target="#avlmeetingrooms" type="button" role="tab" aria-controls="avlmeetingrooms" aria-selected="true">Available Meeting Rooms</button>
+                    </li>
+                    <li class="nav-item flex-sm-fill" role="presentation">
+                        <button class="border-bottom-0 w-100 nav-link" id="bookings-tab" data-bs-toggle="tab" data-bs-target="#bookings" type="button" role="tab" aria-controls="bookings" aria-selected="false">My Bookings</button>
+                    </li>
+
+
+                </ul>
+
+                <div class="tab-content" id="tab3Content">
+
+
+                    <!-- Buildings -->
+                    <div class="tab-pane fade" id="avlbuildings" role="tabpanel" aria-labelledby="avlbuildings-tab">
+                        <div class="p-4 border border-top-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover text-nowrap">
+                                    <thead>
+                                        <tr class="text-sm">
+                                            <th class="border-gray-300 border-top py-3">Building ID</th>
+                                            <th class="border-gray-300 border-top py-3">Building Name</th>
+                                            <th class="border-gray-300 border-top py-3">Building Status</th>
+                                            <th class="border-gray-300 border-top py-3">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{
+                                            if (ViewBag.AllBuildings != null)
+                                            {
+                                                foreach (var r in ViewBag.AllBuildings)
+                                                {
+
+                                                    <tr class="text-sm">
+                                                        <td class="align-middle py-3">@r.BuildingCode</td>
+                                                        <td class="align-middle py-3">@r.BuildingName</td>
+                                                        <td class="align-middle py-3"><span class="badge fw-light text-uppercase bg-info isaccessible">@r.IsaccessibleLabel</span></td>
+                                                        <td class="align-middle py-3 "><button class="btn btn-outline-primary btn-sm action" onclick="PostEnableDisableRequest(this)" id="@r.strBuildingId" data-status="@r.IsaccessibleLabel"></button></td>
+
+                                                    </tr>
+                                                }
+
+                                            }
+
+
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!--Available Rooms-->
+                    <div class="tab-pane fade" id="avlmeetingrooms" role="tabpanel" aria-labelledby="avlmeetingrooms-tab">
+                        <div class="p-4 border border-top-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover text-nowrap">
+                                    <thead>
+                                        <tr class="text-sm">
+                                            <th class="border-gray-300 border-top py-3">Name</th>
+                                            <th class="border-gray-300 border-top py-3">Building</th>
+                                            <th class="border-gray-300 border-top py-3">Room Status</th>
+                                            <th class="border-gray-300 border-top py-3">Status Reason</th>
+                                            <th class="border-gray-300 border-top py-3">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{
+                                            if (ViewBag.MeetingRooms != null)
+                                            {
+                                                foreach (var r in ViewBag.MeetingRooms)
+                                                {
+
+                                                    if (ViewBag.User.PortalRole.RoleName == "Admin")
+                                                    {
+                                                        <tr class="text-sm">
+                                                            <td class="align-middle py-3">@r.RoomName</td>
+                                                            <td class="align-middle py-3">@r.Building.BuildingName</td>
+                                                            <td class="align-middle py-3"><span class="badge fw-light text-uppercase bg-info">@r.Status.Name</span></td>
+                                                            <td class="align-middle py-3">@r.Reason.Name</td>
+
+                                                            <td class="align-middle py-3"><button class="btn btn-outline-primary btn-sm roomaction" onclick="openModalDialog(this,'bookaroom-modal')" id="@r.RoomEntityId" data-action-type="bookroom">Book Room</button> &nbsp; <button class="btn btn-outline-secondary btn-sm" onclick="openModalDialog(this,'blockroom-modal')" id="@r.RoomEntityId" data-action-type="blockroom">Block Room</button></td>
+                                                        </tr>
+                                                    }
+                                                    else
+                                                    {
+                                                        <tr class="text-sm">
+                                                            <td class="align-middle py-3">@r.RoomName</td>
+                                                            <td class="align-middle py-3">@r.Building.BuildingName</td>
+                                                            <td class="align-middle py-3"><span class="badge fw-light text-uppercase bg-info">@r.Status.Name</span></td>
+                                                            <td class="align-middle py-3">@r.Reason.Name</td>
+
+                                                            <td class="align-middle py-3"><button class="btn btn-outline-primary btn-sm" id="@r.RoomEntityId" data-action-type="bookroom" onclick="openModalDialog(this,'bookaroom-modal')">Book Room</button>
+                                                        </tr>
+                                                    }
+                                                }
+
+                                            }
+
+
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!---My Bookings-->
+                    <div class="tab-pane fade" id="bookings" role="tabpanel" aria-labelledby="bookings-tab">
+                        <div class="p-4 border border-top-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover text-nowrap">
+                                    <thead>
+                                        <tr class="text-sm">
+                                            <th class="border-gray-300 border-top py-3">Subject</th>
+                                            <th class="border-gray-300 border-top py-3">Booking Date</th>
+                                            <th class="border-gray-300 border-top py-3">Time Slot</th>
+                                            <th class="border-gray-300 border-top py-3">Room</th>
+                                            <th class="border-gray-300 border-top py-3">Building</th>
+                                            <th class="border-gray-300 border-top py-3">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        @{
+                                            if (ViewBag.UserBookings != null)
+                                            {
+
+                                                foreach (var r in ViewBag.UserBookings)
+                                                {
+
+                                                    <tr class="text-sm">
+                                                        <td class="align-middle py-3">@r.Subject</td>
+                                                        <td class="align-middle py-3">@r.Startdate.ToLongDateString()</td>
+
+                                                        <td class="align-middle py-3">@r.timeslotLabel</td>
+                                                        <td class="align-middle py-3">@r.Room.RoomName</td>
+                                                        <td class="align-middle py-3">@r.Building.BuildingName</td>
+                                                        <td class="align-middle py-3"><button class="btn btn-outline-primary btn-sm" onclick="openModalDialog(this,'bookaroom-modal')" id="@r.BookingId" data-action-type="viewroombooking">View</button></td>
+                                                    </tr>
+                                                }
+
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+            </div>
+
+            <!-- Blocking Modal-->
+            <div class="modal fade" id="blockroom-modal" tabindex="-1" aria-labelledby="blockroom-modal" data-roomId="" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title text-uppercase" id="blockroom-modalLabel">Block Room</h4>
+                            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+
+                            <label class="form-label" for="duration">Duration</label>
+                            <select class="form-select js-states" id="duration" name="duration" data-customclass="form-control py-1" required>
+                                <option value="0"></option>
+                                <option value="1">4 hours</option>
+                                <option value="2">6 hours</option>
+                                <option value="3">All Day</option>
+                            </select>
+                            <p></p>
+                            <p class="text-center">
+                                <button class="btn btn-outline-primary" onclick="PostBlockEnableRequest()" type="button">Confirm</button>
+                            </p>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Blocking modal end-->
+            <!-- Booking Modal-->
+            <div class="modal fade" id="bookaroom-modal" tabindex="-1" aria-labelledby="bookaroom-modalLabel" data-roomId="" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title text-uppercase" id="bookaroom-modalLabel">Meeting Room Booking</h4>
+                            <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+
+                            <div class="form-group mb-3">
+                                <label class="form-label" for="subject">Subject</label>
+                                <input class="form-control" id="subject" type="text" name="subject" placeholder="Enter a Subject" required>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label class="form-label" for="buildingname">Building</label>
+                                <select class="form-select js-states" id="building" name="buildingname" data-customclass="form-control py-1" required>
+                                    <option value="0"></option>
+                                    @{
+                                        if (ViewBag.Buildings != null)
+                                        {
+                                            foreach (var b in ViewBag.Buildings)
+                                            {
+                                                <option value="@b.BuildingId">@b.BuildingName</option>
+                                            }
+                                        }
+                                    }
+
+                                </select>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label class="form-label" for="roomname">Room</label>
+                                <select class="form-select js-states" id="room" name="roomname" data-customclass="form-control py-1" required disabled">
+                                    <option value="0"></option>
+
+                                </select>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label class="form-label" for="startdate">Date</label>
+                                <input class="form-control" id="startdate" type="date" name="startDate" required>
+                                <input class="form-control" id="startdatelabel" type="text" name="startDatelabel" style="display:none">
+
+                                <label class="form-label" for="enddate">Time</label>
+                                <select class="form-select js-states" id="time" name="timename" data-customclass="form-control py-1" required>
+                                    <option value="0"></option>
+                                    <option value="1">8AM - 10AM</option>
+                                    <option value="2">11AM - 1PM</option>
+                                    <option value="3">2PM - 4PM</option>
+                                </select>
+                            </div>
+
+                            <p class="text-center">
+                                <button class="btn btn-outline-primary" onclick="PostBookingRequest()" type="button" id="submitbooking"><i class="fas fa-save"></i>Submit</button>
+                            </p>
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <h3 class="h4 text-uppercase lined mb-4">Quick Actions</h3>
+                <nav class="nav flex-column nav-pills">
+
+                    <a class="nav-link text-sm active" href="#" data-bs-toggle="modal" data-bs-target="#bookaroom-modal"> <i class="me-2 fas fa-plus"></i><span>Book a Room</span></a>
+                    <a class="nav-link text-sm" href="customer-wishlist.html" style="display:none"> <i class="me-2 fas fa-heart"></i><span>My wishlist</span></a>
+                    <a class="nav-link text-sm" href="customer-account.html" style="display:none"> <i class="me-2 fas fa-user"></i><span>My account</span></a>
+                    <a class="nav-link text-sm" href="index"> <i class="me-2 fas fa-door-open"></i><span>Logout</span></a>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+
